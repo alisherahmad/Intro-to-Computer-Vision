@@ -53,6 +53,6 @@ We evaluate Sobel (Magnitude, $G_x$, $G_y$), Prewitt, Laplacian, Laplacian of Ga
 
 ```text
 ├── README.md                 # Project Overview and Comparative Results
-├── Answers.md                # Conceptual Discussion & Engineering Q&A
+├── Report.md                # Conceptual Discussion & Engineering Q&A
 ├── main_pipeline.ipynb       # Execution Notebook
 └── Assets/                   # Saved Figures and Plot Artifacts
