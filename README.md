@@ -18,4 +18,4 @@ Repository containing lab tasks, experimental benchmarks, and semester projects 
 - **Institution**: COMSATS University Islamabad
 - **Student**: Ali Sher Ahmad
 - **Registeration**: FA23-BAI-032
-- **Instructor**: Dr Jamal Hussain Shah
+- **Supervisor**: Dr Jamal Hussain Shah
