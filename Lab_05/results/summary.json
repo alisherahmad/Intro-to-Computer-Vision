@@ -1,0 +1,116 @@
+{
+  "best_hog": {
+    "binary": {
+      "ppc": 8,
+      "orient": 6
+    },
+    "multiclass": {
+      "ppc": 16,
+      "orient": 6
+    }
+  },
+  "threshold": 0.34325560796494886,
+  "results": {
+    "binary": {
+      "accuracy": {
+        "SVM (RBF)": 0.8048,
+        "Random Forest": 0.7945,
+        "Logistic Regression": 0.7603,
+        "k-NN (k=5)": 0.5
+      },
+      "precision": {
+        "SVM (RBF)": 0.8274,
+        "Random Forest": 0.8,
+        "Logistic Regression": 0.8867,
+        "k-NN (k=5)": 0.8704
+      },
+      "recall": {
+        "SVM (RBF)": 0.8763,
+        "Random Forest": 0.9032,
+        "Logistic Regression": 0.7151,
+        "k-NN (k=5)": 0.2527
+      },
+      "f1": {
+        "SVM (RBF)": 0.8512,
+        "Random Forest": 0.8485,
+        "Logistic Regression": 0.7917,
+        "k-NN (k=5)": 0.3917
+      },
+      "f1_macro": {
+        "SVM (RBF)": 0.7838,
+        "Random Forest": 0.7647,
+        "Logistic Regression": 0.7547,
+        "k-NN (k=5)": 0.4836
+      },
+      "roc_auc": {
+        "SVM (RBF)": 0.8655,
+        "Random Forest": 0.8719,
+        "Logistic Regression": 0.8464,
+        "k-NN (k=5)": 0.7071
+      },
+      "train_s": {
+        "SVM (RBF)": 334.3844,
+        "Random Forest": 75.285,
+        "Logistic Regression": 2.211,
+        "k-NN (k=5)": 0.134
+      },
+      "infer_ms_per_img": {
+        "SVM (RBF)": 8.1782,
+        "Random Forest": 2.2792,
+        "Logistic Regression": 1.9289,
+        "k-NN (k=5)": 2.9535
+      }
+    },
+    "multiclass": {
+      "accuracy": {
+        "SVM (RBF)": 0.91,
+        "Random Forest": 0.88,
+        "Logistic Regression": 0.85,
+        "k-NN (k=5)": 0.74
+      },
+      "precision": {
+        "SVM (RBF)": 0.9107,
+        "Random Forest": 0.8917,
+        "Logistic Regression": 0.8544,
+        "k-NN (k=5)": 0.8199
+      },
+      "recall": {
+        "SVM (RBF)": 0.9105,
+        "Random Forest": 0.8787,
+        "Logistic Regression": 0.8499,
+        "k-NN (k=5)": 0.7322
+      },
+      "f1": {
+        "SVM (RBF)": 0.9094,
+        "Random Forest": 0.8808,
+        "Logistic Regression": 0.8488,
+        "k-NN (k=5)": 0.6868
+      },
+      "f1_macro": {
+        "SVM (RBF)": 0.9094,
+        "Random Forest": 0.8808,
+        "Logistic Regression": 0.8488,
+        "k-NN (k=5)": 0.6868
+      },
+      "train_s": {
+        "SVM (RBF)": 16.1275,
+        "Random Forest": 16.9449,
+        "Logistic Regression": 7.2606,
+        "k-NN (k=5)": 0.0706
+      },
+      "infer_ms_per_img": {
+        "SVM (RBF)": 6.033,
+        "Random Forest": 5.0482,
+        "Logistic Regression": 4.1173,
+        "k-NN (k=5)": 4.3552
+      }
+    }
+  },
+  "qc": {
+    "Defective products correctly REJECTED (image-level recall)": 1.0,
+    "Defect-type accuracy on rejected products": 0.91,
+    "Clean surface samples wrongly REJECTED (false-reject rate)": 0.5472,
+    "Mean latency per product (ms)": 320.6905,
+    "Throughput (products / s, single core)": 3.1183
+  }
+}
