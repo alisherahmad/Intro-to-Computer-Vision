@@ -1,6 +1,0 @@
-,0
-Defective products correctly REJECTED (image-level recall),1.0
-Defect-type accuracy on rejected products,0.91
-Clean surface samples wrongly REJECTED (false-reject rate),0.5472
-Mean latency per product (ms),320.6905
-"Throughput (products / s, single core)",3.1183
