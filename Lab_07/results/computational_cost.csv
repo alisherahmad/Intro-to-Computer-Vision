@@ -1,0 +1,7 @@
+,HOG + SVM,GA-HOG + SVM (GA-A)
+Features,8100.0,3936.0
+Features kept (%),100.0,48.593
+GA search time (s),0.0,244.229
+C tuning time (s),179.613,85.783
+"Training time, chosen C (s)",50.586,24.725
+Test inference time (s),9.897,5.198
