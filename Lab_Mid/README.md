@@ -2,66 +2,181 @@
 
 **Name:** Ali Sher Ahmad  
 **Reg No:** 032  
-**Course:** Computer Vision Lab
+**Course:** Computer Vision Lab  
+**Tools:** Python, Google Colab
 
-## Task
-Build two classical blood-cell classifiers, **HOG + SVM** and **SIFT + SVM**, that run on a normal laptop, and find out which one is more reliable when images are rotated or noisy.
+---
 
-## Files
+## 📌 Task
+A small lab wants a simple blood-cell classifier that runs on a normal laptop. This project builds two classical computer-vision pipelines, **HOG + SVM** and **SIFT + SVM**, and compares which one is more reliable when the images are **rotated** or **noisy**.
+
+---
+
+## 📁 Files
 | File | Description |
 |---|---|
 | `032_ALISHER_LabMid.ipynb` | Executed notebook with all outputs (Q1–Q5) |
 | `032_ALISHER_LabMid.pdf` | PDF copy of the notebook |
+| `README.md` | This file |
 
-## Personal settings (from reg no 032)
-| Setting | Rule | Value |
+---
+
+## ⚙️ Personal Settings (from Reg No 032)
+| Setting | Rule | My Value |
 |---|---|---|
-| Random seed | Last two digits | **32** |
-| HOG cell size | Last digit 2 is even | **8 × 8** |
-| SIFT grid | Last digit 2 is in 0–4 | **4 × 4 (16 keypoints)** |
+| Random seed | Last two digits of reg no | **32** |
+| HOG cell size | Last digit (2) is even → 8 × 8 | **8 × 8** |
+| SIFT grid size | Last digit (2) is in 0–4 → 4 × 4 | **4 × 4 (16 keypoints)** |
 
-## Setup
-- **Dataset:** BloodMNIST (`medmnist`), size 64
-- **Classes:** eosinophil (1), monocyte (5), neutrophil (6), platelet (7)
-- **Split:** 100 train / 30 validation / 30 test images per class → 400 / 120 / 120
-- **Preprocessing:** grayscale, resized to 128 × 128
-- **HOG:** 9 orientations, 8 × 8 cells, 2 × 2 cells per block, L2-Hys normalisation
-- **SIFT:** fixed 4 × 4 grid of keypoints (size 32) over the image, descriptors from `sift.compute`
-- **Classifier:** StandardScaler + LinearSVC, C chosen from {0.1, 1, 10} on the validation set
+---
 
-## Results
+## 🧪 Fixed Setup
+| Item | Value |
+|---|---|
+| Dataset | BloodMNIST (`medmnist`), image size 64 |
+| Classes | eosinophil (1), monocyte (5), neutrophil (6), platelet (7) |
+| Images per class | 100 train, 30 validation, 30 test |
+| Total images | 400 train, 120 validation, 120 test |
+| Preprocessing | Grayscale, resized to 128 × 128 |
+| HOG | 9 orientations, 8 × 8 cells, 2 × 2 cells per block, L2-Hys |
+| SIFT | Fixed 4 × 4 grid, keypoint size 32 |
+| Classifier | StandardScaler + LinearSVC, C ∈ {0.1, 1, 10} chosen on validation |
+| Rotation test | 20 degrees |
+| Noise test | Gaussian noise, σ = 0.05 (image scaled to 0–1) |
 
-### Feature lengths
-| Features | Calculation | Length |
+---
+
+## 🔄 Pipeline
+```
+BloodMNIST (RGB 64×64)
+      │
+      ▼
+Keep 4 classes → sample 100/30/30 per class (seed 32)
+      │
+      ▼
+Grayscale → Resize to 128×128
+      │
+      ├──► HOG features (8100) ──► StandardScaler ──► LinearSVC
+      │
+      └──► Grid SIFT features (2048) ──► StandardScaler ──► LinearSVC
+                                                │
+                                                ▼
+                        Evaluate on Clean / Rotated / Noisy test images
+```
+
+---
+
+## Q1. Data Setup
+- Loaded BloodMNIST at size 64 and kept only classes 1, 5, 6 and 7.
+- Randomly selected 100 / 30 / 30 images per class from the train / validation / test splits using seed 32.
+- Converted the images to grayscale and resized them to 128 × 128.
+
+| Split | Shape | Images per class |
 |---|---|---|
-| HOG | 15 × 15 blocks × (2 × 2 cells × 9 bins) | **8100** |
-| Grid SIFT | 16 keypoints × 128 | **2048** |
+| Train | (400, 128, 128) | 100 |
+| Validation | (120, 128, 128) | 30 |
+| Test | (120, 128, 128) | 30 |
 
-### Validation (C chosen on validation, best C = 0.1 for both)
-| Model | Val accuracy | Macro-F1 |
-|---|---|---|
-| HOG + SVM | 0.725 | 0.721 |
-| SIFT + SVM | 0.708 | 0.712 |
+---
 
-### Normal SIFT detection (training set)
-Average 71.8 keypoints per image (min 7, max 324), with 0 images having zero keypoints. Because the number of keypoints varies, the descriptors can't be stacked into one fixed-length vector for the SVM, which is why the fixed grid was used.
+## Q2. HOG + SVM
 
-### Robustness on the test set (frozen models)
-| Model | Clean | Rotated 20° | Noisy (σ = 0.05) |
+### HOG feature length (hand calculation)
+- Cells per side = 128 / 8 = **16**
+- Blocks per side = 16 − 2 + 1 = **15** → 15 × 15 = **225 blocks**
+- Values per block = 2 × 2 cells × 9 bins = **36**
+- **HOG length = 225 × 36 = 8100**
+
+### Results (validation)
+| C | Validation Accuracy |
+|---|---|
+| 0.1 | 0.725 |
+| 1 | 0.725 |
+| 10 | 0.725 |
+
+**Best C = 0.1** → Validation accuracy **0.725**, Macro-F1 **0.721**
+
+> All C values gave the same accuracy because 8100 features with only 400 images are already linearly separable. On a tie, the smallest C (simplest model) was kept.
+
+---
+
+## Q3. SIFT + SVM
+
+### Normal SIFT detection (training images)
+| Statistic | Value |
+|---|---|
+| Average keypoints per image | 71.8 |
+| Minimum | 7 |
+| Maximum | 324 |
+| Images with zero keypoints | 0 |
+
+**Problem:** an SVM needs a fixed-length vector for every image, but normal SIFT gives a different number of 128-D descriptors per image.
+
+### Fix: fixed grid of keypoints
+- A 4 × 4 grid over the 128 × 128 image → keypoints at x, y = **16, 48, 80, 112**, size 32
+- `sift.compute` gives a 128-D descriptor at each point, and the descriptors are joined into one vector
+- **SIFT length = 16 × 128 = 2048**
+
+### Results (validation)
+| C | Validation Accuracy |
+|---|---|
+| 0.1 | 0.708 |
+| 1 | 0.708 |
+| 10 | 0.700 |
+
+**Best C = 0.1** → Validation accuracy **0.708**, Macro-F1 **0.712**
+
+---
+
+## Q4. Robustness
+
+### Prediction (before running)
+- **Rotation:** HOG would lose more, because its small fixed cells change when edges move and rotate.
+- **Noise:** HOG would lose more, because its small 8 × 8 cells pick up false gradients from noise, while SIFT averages over larger 32-pixel patches.
+
+### Test results (frozen models)
+| Model | Clean | Rotated (20°) | Noisy (σ = 0.05) |
 |---|---|---|---|
 | HOG + SVM | 0.725 | 0.717 | 0.250 |
 | SIFT + SVM | **0.775** | **0.775** | **0.783** |
 
-## Conclusion
-- **SIFT + SVM was the more reliable model.** It scored highest on clean, rotated and noisy test images, and its accuracy hardly changed.
-- **Noise:** HOG + SVM dropped to 0.250, which is chance level for 4 classes. HOG's small 8 × 8 cells pick up false gradients from noise in the smooth background. Each SIFT descriptor pools gradients over a 32-pixel patch, so the noise averages out.
-- **Rotation (20°):** both models were barely affected. HOG lost 0.008 (one test image) and SIFT lost nothing.
-- **Most confused classes:** eosinophil and neutrophil for both models. These two cells differ mainly in granule colour, which is lost after converting to grayscale.
+### Was the prediction correct?
+- **Noise:** ✅ Correct. HOG fell from 0.725 to 0.250 (chance level for 4 classes), while SIFT stayed stable at 0.783.
+- **Rotation:** ✅ Correct but very small. HOG lost only 0.008 (one test image) and SIFT lost nothing, so a 20° rotation barely affected either model.
 
-## How to run
-1. Open the notebook in Google Colab.
-2. Runtime → Run all. The first cell installs `medmnist`, and the dataset downloads automatically.
-3. To use another registration number, change `REG_NO` in the first cell.
+---
 
-## Libraries
-`medmnist`, `numpy`, `opencv-python` (`cv2`), `scikit-image`, `scikit-learn`, `matplotlib`
+## Q5. Short Answers
+
+**Why does HOG use block normalisation?**  
+Gradient strength changes with lighting and contrast. Normalising each 2 × 2 block makes HOG describe edge shape and direction instead of absolute brightness.
+
+**Why is it wrong to choose C using the test set?**  
+The test set would then influence the model, so the test accuracy would be optimistically biased and no longer an honest measure on unseen images.
+
+**Most confused classes:** **eosinophil and neutrophil** (HOG: 17 mistakes, SIFT: 16).  
+Both are similar-sized round white blood cells that differ mainly in granule colour (red-orange vs pale). Grayscale removes this colour information.
+
+---
+
+## ✅ Conclusion
+**SIFT + SVM was the more reliable model.** It had the highest accuracy on clean, rotated and noisy test images, and stayed stable under noise, while HOG + SVM collapsed to chance level.
+
+---
+
+## ▶️ How to Run
+1. Open `032_ALISHER_LabMid.ipynb` in Google Colab.
+2. Click **Runtime → Run all**. The first cell installs `medmnist`, and the dataset downloads automatically.
+3. To use a different registration number, change `REG_NO` in the first cell.
+
+---
+
+## 📚 Libraries
+| Library | Used for |
+|---|---|
+| `medmnist` | Loading the BloodMNIST dataset |
+| `numpy` | Arrays and maths |
+| `opencv-python` (`cv2`) | Grayscale, resize, rotation, SIFT |
+| `scikit-image` | HOG features and visualisation |
+| `scikit-learn` | LinearSVC, StandardScaler, metrics |
+| `matplotlib` | Plots and image grids |
